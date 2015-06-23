@@ -424,41 +424,41 @@ var resizePizzas = function(size) {
 
   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
   //determineDx is called multiple Rather than requesting the window width each time this function is called, lets pass it in.
-  function determineDx (windowwidth, newsize, elem, size) {
+  function determineDx (elem, size) {
     var oldwidth = elem.offsetWidth;
+    var windowwidth = document.querySelector("#randomPizzas").offsetWidth;
     var oldsize = oldwidth / windowwidth;
 
+    // TODO: change to 3 sizes? no more xl?
+    // Changes the slider value to a percent width
+    function sizeSwitcher (size) {
+      switch(size) {
+        case "1":
+          return 0.25;
+        case "2":
+          return 0.3333;
+        case "3":
+          return 0.5;
+        default:
+          console.log("bug in sizeSwitcher");
+      }
+    }
+
+    var newsize = sizeSwitcher(size);
     var dx = (newsize - oldsize) * windowwidth;
 
     return dx;
   }
 
-
-
-  // TODO: change to 3 sizes? no more xl?
-  // Changes the slider value to a percent width
-  //This only needs to be called once. It was being called once per pizza element
-  function sizeSwitcher (size) {
-    switch(size) {
-      case "1":
-        return 0.25;
-      case "2":
-        return 0.3333;
-      case "3":
-        return 0.5;
-      default:
-        console.log("bug in sizeSwitcher");
-    }
-  }
-
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    var windowwidth = document.querySelector("#randomPizzas").offsetWidth;
-    var newsize = sizeSwitcher(size);
+    if(randPizzaContainer.length === 0)
+      return;
 
+    //All of the pizzas are the same size so I only need to calculate dx and the new width once
+    var dx = determineDx(randPizzaContainer[0], size)
+    var newwidth = (randPizzaContainer[0].offsetWidth + dx) + 'px';
     for (var i = 0; i < randPizzaContainer.length; i++) {
-      var dx = determineDx(windowwidth, newsize, randPizzaContainer[i], size);
-      var newwidth = (randPizzaContainer[i].offsetWidth + dx) + 'px';
       randPizzaContainer[i].style.width = newwidth;
     }
   }
