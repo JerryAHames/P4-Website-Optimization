@@ -287,11 +287,11 @@ var nouns = ["animals", "everyday", "fantasy", "gross", "horror", "jewelry", "pl
 
 // Generates random numbers for getAdj and getNoun functions and returns a new pizza name
 function generator(adj, noun) {
-  var adjectives = getAdj(adj);
-  var nouns = getNoun(noun);
-  var randomAdjective = parseInt(Math.random() * adjectives.length);
-  var randomNoun = parseInt(Math.random() * nouns.length);
-  var name = "The " + adjectives[randomAdjective].capitalize() + " " + nouns[randomNoun].capitalize();
+  var genAdjectives = getAdj(adj);  //adjectives is already declared. Lets change the name to avoid a conflict.
+  var genNouns = getNoun(noun);     //nouns is already declared. Lets change the name to avoid a conflict.
+  var randomAdjective = parseInt(Math.random() * genAdjectives.length);
+  var randomNoun = parseInt(Math.random() * genNouns.length);
+  var name = "The " + genAdjectives[randomAdjective].capitalize() + " " + genNouns[randomNoun].capitalize();
   return name;
 }
 
@@ -304,27 +304,27 @@ function randomName() {
 
 // These functions return a string of a random ingredient from each respective category of ingredients.
 var selectRandomMeat = function() {
-  var randomMeat = pizzaIngredients.meats[Math.floor((Math.random() * pizzaIngredients.meats.length))];
+  var randomMeat = pizzaIngredients.meats[Math.floor(Math.random() * pizzaIngredients.meats.length)];
   return randomMeat;
 };
 
 var selectRandomNonMeat = function() {
-  var randomNonMeat = pizzaIngredients.nonMeats[Math.floor((Math.random() * pizzaIngredients.nonMeats.length))];
+  var randomNonMeat = pizzaIngredients.nonMeats[Math.floor(Math.random() * pizzaIngredients.nonMeats.length)];
   return randomNonMeat;
 };
 
 var selectRandomCheese = function() {
-  var randomCheese = pizzaIngredients.cheeses[Math.floor((Math.random() * pizzaIngredients.cheeses.length))];
+  var randomCheese = pizzaIngredients.cheeses[Math.floor(Math.random() * pizzaIngredients.cheeses.length)];
   return randomCheese;
 };
 
 var selectRandomSauce = function() {
-  var randomSauce = pizzaIngredients.sauces[Math.floor((Math.random() * pizzaIngredients.sauces.length))];
+  var randomSauce = pizzaIngredients.sauces[Math.floor(Math.random() * pizzaIngredients.sauces.length)];
   return randomSauce;
 };
 
 var selectRandomCrust = function() {
-  var randomCrust = pizzaIngredients.crusts[Math.floor((Math.random() * pizzaIngredients.crusts.length))];
+  var randomCrust = pizzaIngredients.crusts[Math.floor(Math.random() * pizzaIngredients.crusts.length)];
   return randomCrust;
 };
 
@@ -336,9 +336,9 @@ var ingredientItemizer = function(string) {
 var makeRandomPizza = function() {
   var pizza = "";
 
-  var numberOfMeats = Math.floor((Math.random() * 4));
-  var numberOfNonMeats = Math.floor((Math.random() * 3));
-  var numberOfCheeses = Math.floor((Math.random() * 2));
+  var numberOfMeats = Math.floor(Math.random() * 4);
+  var numberOfNonMeats = Math.floor(Math.random() * 3);
+  var numberOfCheeses = Math.floor(Math.random() * 2);
 
   for (var i = 0; i < numberOfMeats; i++) {
     pizza = pizza + ingredientItemizer(selectRandomMeat());
@@ -423,7 +423,8 @@ var resizePizzas = function(size) {
   changeSliderLabel(size);
 
   // Returns the size difference to change a pizza element from one size to another. Called by changePizzaSlices(size).
-  //determineDx is called multiple Rather than requesting the window width each time this function is called, lets pass it in.
+  //Originally called once per pizza per resize event. Each of the elements are the same size, so there is no point in
+  //calling this more than once.
   function determineDx (elem, size) {
     var oldwidth = elem.offsetWidth;
     var windowwidth = document.querySelector("#randomPizzas").offsetWidth;
@@ -494,10 +495,10 @@ var frame = 0;
 function logAverageFrame(times) {   // times is the array of User Timing measurements from updatePositions()
   var numberOfEntries = times.length;
   var sum = 0;
-  for (var i = numberOfEntries - 1; i > numberOfEntries - 11; i--) {
+  for (var i = 0; i > numberOfEntries; i--) {
     sum = sum + times[i].duration;
   }
-  times.splice(0, numberOfEntries);
+  times.splice(0, numberOfEntries); //Don't need to hang on to the old entries.
   console.log("Average time to generate last 10 frames: " + sum / 10 + "ms");
 }
 
@@ -529,6 +530,8 @@ function updatePositions() {
   // Super easy to create custom metrics.
   window.performance.mark("mark_end_frame");
   window.performance.measure("measure_frame_duration", "mark_start_frame", "mark_end_frame");
+  //We only want to alert when the number of frames that have been rendered is >= 10. once it's above 10,
+  //lets set it to 0 to start over.
   if (frame >= 10) {
     frame = 0;
     var timesToUpdatePosition = window.performance.getEntriesByName("measure_frame_duration");
