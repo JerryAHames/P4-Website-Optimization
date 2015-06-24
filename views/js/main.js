@@ -427,7 +427,7 @@ var resizePizzas = function(size) {
   //calling this more than once.
   function determineDx (elem, size) {
     var oldwidth = elem.offsetWidth;
-    var windowwidth = document.querySelector("#randomPizzas").offsetWidth;
+    var windowwidth = document.getElementById("randomPizzas").offsetWidth;
     var oldsize = oldwidth / windowwidth;
 
     // TODO: change to 3 sizes? no more xl?
@@ -548,6 +548,7 @@ document.addEventListener('DOMContentLoaded', function() {
   var rows = screen.height / s + 1; //Plus 1, just in case.
   var numPizzas = rows * cols;
 
+  var movingPizzas = document.getElementById("movingPizzas1");
   for (var i = 0; i < numPizzas; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
@@ -556,7 +557,7 @@ document.addEventListener('DOMContentLoaded', function() {
     elem.style.width = "73.333px";
     elem.basicLeft = (i % cols) * s;
     elem.style.top = (Math.floor(i / cols) * s) + 'px';
-    document.querySelector("#movingPizzas1").appendChild(elem);
+    movingPizzas.appendChild(elem);
   }
 
   //Each of the variables below was being used to retreive an element from the DOM for some purpose inside of a function.
