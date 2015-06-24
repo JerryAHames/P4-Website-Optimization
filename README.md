@@ -35,6 +35,9 @@
       * I'm not using times for anything else, so it's better to not let this grow too large.
     1.  Inside resizePizzas, the determineDx function was adjusted so that it was only called once.
       * It was initially being called once per pizza. Each pizza is using the same image, and is thus the same size. Therefore there's no need to call this once per pizza. Call it once and apply the results to all the pizzas.
+1. Optimizations to views/css/style.css
+  1. Added backface-visibility property to the .movers class.
+    * This forces each randomly created pizza into it's own layer, which basically offloads it to the GPU.
 
 ### Outside Resources
 * <a href="https://developers.google.com/speed/pagespeed/insights/">Pagespeed Insights</a>
