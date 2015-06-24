@@ -403,17 +403,17 @@ var resizePizzas = function(size) {
   window.performance.mark("mark_start_resize");   // User Timing API function
 
   // Changes the value for the size of the pizza above the slider
-  //This is only called once.
+  //This is only called once for each time the slider is changed
   function changeSliderLabel(size) {
     switch(size) {
       case "1":
-      pizzaSizeInnerHTML = "Small";
+        pizzaSize.innerHTML = "Small";
         return;
       case "2":
-      pizzaSizeInnerHTML = "Medium";
+        pizzaSize.innerHTML = "Medium";
         return;
       case "3":
-      pizzaSizeInnerHTML = "Large";
+        pizzaSize.innerHTML = "Large";
         return;
       default:
         console.log("bug in changeSliderLabel");
@@ -495,7 +495,7 @@ var frame = 0;
 function logAverageFrame(times) {   // times is the array of User Timing measurements from updatePositions()
   var numberOfEntries = times.length;
   var sum = 0;
-  for (var i = 0; i > numberOfEntries; i--) {
+  for (var i = numberOfEntries - 1; i > numberOfEntries - 11; i--) {
     sum = sum + times[i].duration;
   }
   times.splice(0, numberOfEntries); //Don't need to hang on to the old entries.
@@ -522,7 +522,6 @@ function updatePositions() {
     phases[p] = Math.sin(scrolltop + p);
 
   for (var i = 0; i < moveritems.length; i++) {
-
     moveritems[i].style.left = moveritems[i].basicLeft + 100 * phases[i % 5] + 'px';
   }
 
@@ -533,9 +532,9 @@ function updatePositions() {
   //We only want to alert when the number of frames that have been rendered is >= 10. once it's above 10,
   //lets set it to 0 to start over.
   if (frame >= 10) {
-    frame = 0;
     var timesToUpdatePosition = window.performance.getEntriesByName("measure_frame_duration");
     logAverageFrame(timesToUpdatePosition);
+    frame = 0;
   }
 }
 
@@ -565,6 +564,5 @@ document.addEventListener('DOMContentLoaded', function() {
   //aren't changing, so we can retreive them once rather than each time.
   moveritems = document.getElementsByClassName('mover');
   randPizzaContainer = document.getElementsByClassName("randomPizzaContainer");
-  pizzaSizeInnerHTML = document.querySelector("#pizzaSize").innerHTML;
   updatePositions();
 });
